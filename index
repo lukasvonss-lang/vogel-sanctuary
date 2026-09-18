@@ -1,0 +1,54 @@
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link href="/style.css" rel="stylesheet" type="text/css" media="all">
+<head/>
+<body>
+<h1>Welcome to the cult!</h1>
+
+<div class="hotbar">
+    <a class="btn btn-primary" href="https://vogel-von-dark-sun.neocities.org/" role="button">Inicio</a>
+    <a class="btn btn-primary" href="https://vogel-von-dark-sun.neocities.org/GalleryV3" role="button">Gallery</a>
+    <a class="btn btn-primary" href="https://vogel-von-dark-sun.neocities.org/Translation" role="button">Translations/Traducciones</a>
+  </div>
+<div class="container">
+  <div id="gallery" class="row g-2 g-md-3"></div>
+  <div id="pagination" class="d-flex justify-content-center flex-wrap gap-2 my-4"></div>
+</div>
+
+<script>
+const POSTS_PER_PAGE = 20;
+
+async function load() {
+  const res = await fetch('/Posts.json');
+  const posts = await res.json();
+
+  const params = new URLSearchParams(location.search);
+  let page = parseInt(params.get('page') || '1');
+  if (isNaN(page) || page < 1) page = 1;
+
+  const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+  if (page > totalPages) page = totalPages || 1;
+
+  const start = (page - 1) * POSTS_PER_PAGE;
+  const pagePosts = posts.slice(start, start + POSTS_PER_PAGE);
+
+  document.getElementById('gallery').innerHTML = pagePosts.map(id => `
+    <div class="col-6 col-md-3">
+      <a href="/Posts/${id}.html">
+        <img src="/Thumbnails/${id}.jpg" class="img-fluid w-100" alt="${id}" loading="lazy" style="aspect-ratio:1; object-fit:cover;">
+      </a>
+    </div>
+  `).join('');
+
+  let pag = '';
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === page) pag += `<span class="btn btn-dark btn-lg disabled">${i}</span>`;
+    else pag += `<a href="?page=${i}" class="btn btn-outline-dark btn-lg">${i}</a>`;
+  }
+  document.getElementById('pagination').innerHTML = pag;
+}
+load();
+</script>
+<body/>
