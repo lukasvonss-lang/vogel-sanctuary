@@ -1,0 +1,17 @@
+Dir.glob("_pics/*.{jpg,jpeg,png,webp}").each do |path|
+  id = File.basename(path, ".*") # 00022
+  out = "_posts/#{Time.now.strftime('%Y-%m-%d')}-#{id}.md"
+  next if File.exist?(out)
+
+  File.write(out, <<~MD)
+    ---
+    layout: post
+    post_id: post#{id}
+    title: "Art ##{id}"
+    image: "/#{path}"
+    thumbnail: "/Thumbnails/#{id}.jpg"
+    description: "No description yet"
+    credits: "Vogel Von Edelweiss"
+    ---
+  MD
+end
