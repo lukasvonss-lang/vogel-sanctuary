@@ -1,0 +1,29 @@
+name: Generate pages for pics
+on:
+  push:
+    branches: [main]
+    paths:
+      - '_pics/**'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Generate posts
+        run: |
+          mkdir -p _posts
+          ruby scripts/generate.rb
+
+      - name: Commit new posts
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "auto: generate post pages"
+          file_pattern: "_posts/*.md"
