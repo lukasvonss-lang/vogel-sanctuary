@@ -1,5 +1,6 @@
 Dir.glob("_pics/*.{jpg,jpeg,png,webp,JPG,PNG}").each do |path|
-  id = File.basename(path, ".*")
+  basename = File.basename(path) # 1789363069002.jpg WITH extension
+  id = File.basename(path, ".*") # just 1789363069002
   out = "_posts/2000-01-01-#{id}.md"
   next if File.exist?(out)
 
@@ -8,8 +9,9 @@ Dir.glob("_pics/*.{jpg,jpeg,png,webp,JPG,PNG}").each do |path|
     layout: post
     post_id: post#{id}
     title: "Art ##{id}"
-    image: "/#{path}"
-    thumbnail: "/Thumbnails/#{id}.jpg"
+    permalink: /Posts/#{id}
+    image: /_pics/#{basename}
+    thumbnail: /Thumbnails/#{id}.jpg
     description: "No description yet"
     ---
   MD
